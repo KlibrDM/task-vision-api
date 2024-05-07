@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import { ws } from '..';
 import { WS_CLIENT_EVENTS } from '../models/ws';
 import CollabDoc from '../models/collabDoc';
+import OpenAI from 'openai';
 
 const createDoc = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -280,6 +281,7 @@ const updateDoc = async (req: Request, res: Response, next: NextFunction) => {
     const docId = req.params.docId;
     const docName = req.body.name as string;
     const content = req.body.content as string;
+    const aiSummary = req.body.aiSummary as string;
 
     const project = await Project.findOne({ _id: projectId, 'users.userId': userId });
     if (!project) {
@@ -288,7 +290,7 @@ const updateDoc = async (req: Request, res: Response, next: NextFunction) => {
 
     const oldDoc = await CollabDoc.findById(docId);
 
-    const doc = await CollabDoc.findByIdAndUpdate(docId, { name: docName, content }, { new: true });
+    const doc = await CollabDoc.findByIdAndUpdate(docId, { name: docName, content, ai_summary: aiSummary }, { new: true });
     if (!doc) {
       return res.status(404).json({ message: 'Doc not found' });
     }
@@ -309,6 +311,35 @@ const updateDoc = async (req: Request, res: Response, next: NextFunction) => {
     );
 
     res.send(doc);
+  }
+  catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
+const getAISummary = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const data = req.body as { name: string, content: string };
+
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
+    const aiResponse = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      temperature: 0,
+      response_format: { "type":"json_object" },
+      messages: [
+        {
+          role: 'system',
+          content: 'You will create a summary of a page written in markdown. Your summary should not exceed 400 words. Your summary must be in the same language in which the page content is written. You will be given the name and content of the page. You will provide a summary of the page that will help project members understand what the page is about. Your response must be a JSON that follows the format: { summary: <<your summary>> }.'
+        },
+        {
+          role: 'user',
+          content: `Page name: ${data.name}. Page content: ${data.content}.`
+        }
+      ]
+    });
+
+    const aiSummary = JSON.parse(aiResponse.choices[0].message.content || '{ summary: "" }').summary;
+    return res.status(200).json({ summary: aiSummary });
   }
   catch (err) {
     return res.status(500).json(err);
@@ -339,4 +370,4 @@ const getIsEditedBy = async (docId: string) => {
   }
 };
 
-export default { createDoc, createFolder, getDocs, getDoc, updateDocAccess, deleteDoc, updateDoc, setIsEditedBy, getIsEditedBy };
+export default { createDoc, createFolder, getDocs, getDoc, updateDocAccess, deleteDoc, updateDoc, getAISummary, setIsEditedBy, getIsEditedBy };

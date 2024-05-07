@@ -84,5 +84,6 @@ router.put('/collab-doc/:projectId/:docId', auth, CollabDocsController.updateDoc
 
 // AI
 router.post('/item/ai-summary', auth, ItemController.getAISummary);
+router.post('/collab-doc/ai-summary', auth, CollabDocsController.getAISummary);
 
 export = router;

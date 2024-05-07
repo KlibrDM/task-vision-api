@@ -7,6 +7,7 @@ export interface ICollabDoc {
   name: string;
   structure_path: string;
   content?: string;
+  ai_summary?: string;
   is_folder: boolean;
   roles?: ProjectRole[];
   users?: ObjectId[];
@@ -38,6 +39,11 @@ const CollabDocSchema = new mongoose.Schema({
     type: String,
     required: false,
     length: 10000000
+  },
+  ai_summary: {
+    type: String,
+    required: false,
+    length: 100000
   },
   is_folder: {
     type: Boolean,

@@ -24,7 +24,7 @@ mongoose.connection.on('connected', () => {
 
 // Parse the request
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+app.use(express.json({limit: '100mb'}));
 
 // CORS rules for the API
 app.use((req, res, next) => {
