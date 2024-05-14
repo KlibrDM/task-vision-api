@@ -5,6 +5,7 @@ import { WS_CLIENT_EVENTS } from '../models/ws';
 import { ws } from '..';
 import Logger from './log';
 import { LogAction, LogEntities } from '../models/log';
+import chartData from './chartData';
 
 const createSprint = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -192,6 +193,9 @@ const completeSprint = async (req: Request, res: Response, next: NextFunction) =
       projectId,
     );
 
+    // Create chart data
+    chartData.trackSprintEnd(sprint as ISprint, sprint._id.toString());
+
     // Send response
     return res.status(200).json(project);
   }
@@ -244,6 +248,9 @@ const activateSprint = async (req: Request, res: Response, next: NextFunction) =
       userId,
       project._id.toString(),
     );
+
+    // Create chart data
+    chartData.trackSprintStart(sprint as ISprint, sprint._id.toString());
 
     // Send response
     return res.status(200).json(project);

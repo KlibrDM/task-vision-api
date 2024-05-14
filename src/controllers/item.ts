@@ -7,6 +7,7 @@ import Logger from './log';
 import { LogAction, LogEntities } from '../models/log';
 import OpenAI from 'openai';
 import { ObjectId } from 'mongoose';
+import chartData from './chartData';
 
 const createItem = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -78,6 +79,9 @@ const createItem = async (req: Request, res: Response, next: NextFunction) => {
       userId,
       data.projectId.toString()
     );
+
+    // Create chart data
+    chartData.trackItemUpdates(item, null, item._id.toString(), true);
 
     // Send response
     return res.status(200).json(item);
@@ -191,6 +195,9 @@ const updateItem = async (req: Request, res: Response, next: NextFunction) => {
       userId,
       projectId
     );
+
+    // Create chart data
+    chartData.trackItemUpdates(newItem, item, newItem._id.toString() ?? itemId);
 
     // Send response
     return res.status(200).json(newItem);

@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/user';
 import Project, { IProject, OwnerTypes, ProjectRole } from '../models/project';
-import Sprint, { SprintType } from '../models/sprint';
+import Sprint, { ISprint, SprintType } from '../models/sprint';
 import moment from 'moment';
 import Logger from './log';
 import { LogAction, LogEntities } from '../models/log';
 import UploadedDoc from '../models/uploadedDoc';
+import chartData from './chartData';
 
 const createProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -103,6 +104,9 @@ const createProject = async (req: Request, res: Response, next: NextFunction) =>
       userId,
       project._id.toString(),
     );
+
+    // Sprint is automatically started - Create chart data
+    chartData.trackSprintStart(sprint as ISprint, sprint._id.toString());
 
     return res.status(200).json(project);
   }

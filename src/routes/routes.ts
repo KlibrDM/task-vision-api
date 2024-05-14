@@ -5,6 +5,7 @@ import ProjectController from '../controllers/project';
 import ItemController from '../controllers/item';
 import SprintController from '../controllers/sprint';
 import LogController from '../controllers/log';
+import ChartDataController from '../controllers/chartData';
 import UploadedDocsController from '../controllers/uploadedDoc';
 import CollabDocsController from '../controllers/collabDoc';
 import auth from "../middleware/auth";
@@ -81,6 +82,9 @@ router.get('/collab-doc/:projectId/:docId', auth, CollabDocsController.getDoc);
 router.put('/collab-doc/access/:projectId/:docId', auth, CollabDocsController.updateDocAccess);
 router.delete('/collab-doc/:projectId/:docId', auth, CollabDocsController.deleteDoc);
 router.put('/collab-doc/:projectId/:docId', auth, CollabDocsController.updateDoc);
+
+// Charts
+router.get('/chart-data/:projectId', auth, ChartDataController.getChartData);
 
 // AI
 router.post('/item/ai-summary', auth, ItemController.getAISummary);
