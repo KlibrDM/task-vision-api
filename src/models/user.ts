@@ -18,6 +18,7 @@ export interface IUser {
   organizationId?: ObjectId;
   active_projectId?: ObjectId;
   settings: IUserSettings;
+  is_active: boolean;
   access_token?: string;
   refresh_token?: string;
 }
@@ -95,6 +96,10 @@ const UserSchema = new mongoose.Schema({
         default: true,
       },
     },
+    required: true,
+  },
+  is_active: {
+    type: Boolean,
     required: true,
   },
   access_token: {

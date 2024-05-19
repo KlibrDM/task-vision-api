@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import UserController from '../controllers/user';
+import OrganizationController from '../controllers/organization';
 import ProjectController from '../controllers/project';
 import ItemController from '../controllers/item';
 import SprintController from '../controllers/sprint';
@@ -21,6 +22,15 @@ router.post('/user/refresh', UserController.refresh);
 router.put('/user', auth, UserController.updateUser);
 router.put('/user/change-password', auth, UserController.changePassword);
 router.get('/who-am-i', auth, UserController.getUser);
+
+// Organization
+router.post('/organization/register', OrganizationController.registerOrganization);
+router.post('/organization/create-user/:orgId', auth, OrganizationController.createOrganizationUser);
+router.put('/organization/update-user-role/:orgId/:userId', auth, OrganizationController.updateOrganizationUserRole);
+router.put('/organization/:orgId', auth, OrganizationController.updateOrganization);
+router.delete('/organization/delete-user/:orgId/:userId', auth, OrganizationController.deleteOrganizationUser);
+router.get('/organization', auth, OrganizationController.getOrganization);
+router.get('/organization/users/:orgId', auth, OrganizationController.getOrganizationUsers);
 
 // Project
 router.post('/project', auth, ProjectController.createProject);

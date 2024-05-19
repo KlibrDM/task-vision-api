@@ -35,6 +35,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
         sprint_notifications: true,
         item_notifications: true,
       },
+      is_active: true,
       is_organization_controlled: false,
     });
 
