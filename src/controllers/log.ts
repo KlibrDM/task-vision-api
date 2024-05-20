@@ -3,6 +3,7 @@ import Log, { LogAction, LogEntities, LogTrigger } from "../models/log";
 import * as _ from 'lodash';
 import Project from "../models/project";
 import { isValidObjectId } from "mongoose";
+import User from "../models/user";
 
 const log = (
   entity: LogEntities,
@@ -217,7 +218,6 @@ const getProjectLogs = async (req: Request, res: Response, next: NextFunction) =
     const offset = parseInt(req.query.offset as string);
     const entities = req.query.entities as LogEntities[];
     const userId = req.headers['id'] as string;
-    
 
     const project = await Project.find({ _id: projectId, 'users.userId': userId });
     if (!project) {
@@ -242,6 +242,43 @@ const getProjectLogs = async (req: Request, res: Response, next: NextFunction) =
   }
 };
 
+const getUserLogs = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const currentUserId = req.headers['id'] as string;
+    const userId = req.params.userId;
+    const limit = parseInt(req.query.limit as string);
+    const offset = parseInt(req.query.offset as string);
+
+    // If currentUserId is not in the same organization as userId, return 403
+    if (currentUserId !== userId) {
+      const user = await User.findById(userId);
+      const currentUser = await User.findById(currentUserId);
+      if (!user || !currentUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      if (user?.organizationId !== currentUser?.organizationId) {
+        return res.status(403).json({ message: 'Forbidden' });
+      }
+    }
+
+    const logsCount = await Log.countDocuments({ logTriggerId: userId });
+    const logs = await Log.find(
+      { logTriggerId: userId },
+      null,
+      { limit, skip: offset, sort: { createdAt: -1 } }
+    );
+    if (!logs.length) {
+      // It's perfectly fine to not have logs for a specified query
+      return res.status(200).json({ count: 0, logs: [] });
+    }
+
+    res.send({ count: logsCount, logs });
+  }
+  catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 export default {
   log,
   logDifference,
@@ -251,4 +288,5 @@ export default {
   logRelationDelete,
   getLogs,
   getProjectLogs,
+  getUserLogs,
 };

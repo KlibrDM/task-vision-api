@@ -167,7 +167,7 @@ const updateOrganization = async (req: Request, res: Response, next: NextFunctio
     const orgId = req.params.orgId;
     const orgChanges = req.body as Partial<IOrganization>;
 
-    const org = await Organization.findById(orgId, { 'users.userId': userId });
+    const org = await Organization.findOne({ _id: orgId, 'users.userId': userId });
     if (!org) {
       return res.status(404).json({ message: 'Organization not found' });
     }
