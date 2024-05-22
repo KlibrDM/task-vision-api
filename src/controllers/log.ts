@@ -248,6 +248,7 @@ const getUserLogs = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
     const limit = parseInt(req.query.limit as string);
     const offset = parseInt(req.query.offset as string);
+    const entities = req.query.entities as LogEntities[];
 
     // If currentUserId is not in the same organization as userId, return 403
     if (currentUserId !== userId) {
@@ -261,9 +262,9 @@ const getUserLogs = async (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
-    const logsCount = await Log.countDocuments({ logTriggerId: userId });
+    const logsCount = await Log.countDocuments({ logTriggerId: userId, affectedEntity: { $in: entities } });
     const logs = await Log.find(
-      { logTriggerId: userId },
+      { logTriggerId: userId, affectedEntity: { $in: entities } },
       null,
       { limit, skip: offset, sort: { createdAt: -1 } }
     );
