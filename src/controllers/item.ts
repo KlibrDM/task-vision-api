@@ -4,6 +4,7 @@ import Item, { IItem, IItemComment, IItemRelation, ItemRelationOpposites, ItemTy
 import { ws } from '..';
 import { WS_CLIENT_EVENTS } from '../models/ws';
 import Logger from './log';
+import Notifier from './notification';
 import { LogAction, LogEntities } from '../models/log';
 import OpenAI from 'openai';
 import { ObjectId } from 'mongoose';
@@ -180,7 +181,24 @@ const updateItem = async (req: Request, res: Response, next: NextFunction) => {
     if (!newItem) {
       return res.status(404).json({ message: 'Item not found' });
     }
-    
+
+    // Send notification
+    Notifier.handleItemUpdateNotification(
+      projectId,
+      userId,
+      item,
+      newItem,
+    );
+
+    // Send mention notification
+    Notifier.handleItemDescriptionMentionNotification(
+      projectId,
+      userId,
+      newItem,
+      item.description || '',
+      newItem.description || '',
+    );
+
     // Send websocket event
     ws.triggerClientEventForAllProject(WS_CLIENT_EVENTS.ITEM_CHANGED, projectId, newItem, userId);
 
@@ -382,6 +400,21 @@ const addComment = async (req: Request, res: Response, next: NextFunction) => {
     if (!item) {
       return res.status(404).json({ message: 'No item found' });
     }
+
+    // Send notification
+    Notifier.handleItemCommentNotification(
+      projectId,
+      userId,
+      item,
+    );
+
+    // Send mention notification
+    Notifier.handleItemCommentMentionNotification(
+      projectId,
+      userId,
+      item,
+      data.comment,
+    );
 
     // Send websocket event
     ws.triggerClientEventForAllProject(WS_CLIENT_EVENTS.ITEM_CHANGED, projectId, item, userId);

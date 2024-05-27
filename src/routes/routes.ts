@@ -7,6 +7,7 @@ import ItemController from '../controllers/item';
 import SprintController from '../controllers/sprint';
 import LogController from '../controllers/log';
 import ChartDataController from '../controllers/chartData';
+import NotificationController from '../controllers/notification';
 import UploadedDocsController from '../controllers/uploadedDoc';
 import CollabDocsController from '../controllers/collabDoc';
 import auth from "../middleware/auth";
@@ -96,6 +97,11 @@ router.put('/collab-doc/:projectId/:docId', auth, CollabDocsController.updateDoc
 
 // Charts
 router.get('/chart-data/:projectId', auth, ChartDataController.getChartData);
+
+// Notifications
+router.get('/notifications/:projectId', auth, NotificationController.getNotifications);
+router.get('/notifications/unread-count/:projectId', auth, NotificationController.getUnreadNotificationsCount);
+router.put('/notifications/mark-as-read/:projectId', auth, NotificationController.markNotificationAsRead);
 
 // AI
 router.post('/item/ai-summary', auth, ItemController.getAISummary);

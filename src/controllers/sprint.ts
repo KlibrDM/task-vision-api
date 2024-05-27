@@ -6,6 +6,7 @@ import { ws } from '..';
 import Logger from './log';
 import { LogAction, LogEntities } from '../models/log';
 import chartData from './chartData';
+import Notifier from './notification';
 
 const createSprint = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -161,6 +162,14 @@ const completeSprint = async (req: Request, res: Response, next: NextFunction) =
       return res.status(404).json({ message: 'Project not found' });
     }
 
+    // Send notification
+    Notifier.handleSprintCompleteNotification(
+      project._id.toString(),
+      project.users,
+      userId,
+      sprint,
+    );
+
     // Send websocket event for project
     ws.triggerClientEventForAllProject(WS_CLIENT_EVENTS.PROJECT_CHANGED, projectId, project, userId);
 
@@ -232,6 +241,14 @@ const activateSprint = async (req: Request, res: Response, next: NextFunction) =
     if (!project) {
       return res.status(404).json({ message: 'Project not found' });
     }
+
+    // Send notification
+    Notifier.handleSprintStartNotification(
+      project._id.toString(),
+      project.users,
+      userId,
+      sprint,
+    );
 
     // Send websocket event
     ws.triggerClientEventForAllProject(WS_CLIENT_EVENTS.PROJECT_CHANGED, projectId, project, userId);

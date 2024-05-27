@@ -104,6 +104,14 @@ export class WSS {
     });
   }
 
+  triggerClientEventForUser = (event: WS_CLIENT_EVENTS, projectId: string, userId: string, payload: any) => {
+    this.wss.clients.forEach((client: any) => {
+      if (client.userId === userId && client.activeProjectId === projectId) {
+        client.send(JSON.stringify({event, payload}));
+      }
+    });
+  };
+
   triggerClientEventForAllProject = (event: WS_CLIENT_EVENTS, projectId: string, payload: any, sourceUserId?: string) => {
     this.wss.clients.forEach((client: any) => {
       if (sourceUserId === client.userId) return;

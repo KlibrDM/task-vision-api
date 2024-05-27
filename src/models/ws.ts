@@ -22,6 +22,7 @@ export enum WS_CLIENT_EVENTS {
   COLLAB_DOC_DELETED = 'collab_doc_deleted',
   ACTIVE_COLLAB_DOC_ACTIVE_USERS = 'active_collab_doc_active_users',
   ACTIVE_COLLAB_DOC_EDITED_BY = 'active_collab_doc_edited_by',
+  NEW_NOTIFICATION = 'new_notification',
 }
 
 export interface IWSData {
