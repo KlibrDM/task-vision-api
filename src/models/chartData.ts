@@ -64,14 +64,6 @@ const ChartDataSchema = new mongoose.Schema({
     required: true,
     enum: Object.values(EventType),
   },
-  oldValue: {
-    type: String,
-    required: false,
-  },
-  newValue: {
-    type: String,
-    required: false,
-  },
 }, {
   timestamps: true,
 });
