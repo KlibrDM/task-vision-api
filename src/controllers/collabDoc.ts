@@ -319,7 +319,7 @@ const updateDoc = async (req: Request, res: Response, next: NextFunction) => {
 
 const getAISummary = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const data = req.body as { name: string, content: string };
+    const data = req.body as { name: string, content: string, language: string };
 
     const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
     const aiResponse = await openai.chat.completions.create({
@@ -329,7 +329,7 @@ const getAISummary = async (req: Request, res: Response, next: NextFunction) => 
       messages: [
         {
           role: 'system',
-          content: 'You will create a summary of a page written in markdown. Your summary should not exceed 400 words. Your summary must be in the same language in which the page content is written. You will be given the name and content of the page. You will provide a summary of the page that will help project members understand what the page is about. Your response must be a JSON that follows the format: { summary: <<your summary>> }.'
+          content: `You will create a summary of a page written in markdown. Your summary should not exceed 400 words. You must provide the summary in ${data.language}. You will be given the name and content of the page. You will provide a summary of the page that will help project members understand what the page is about. Your response must be a JSON that follows the format: { summary: <<your summary>> }.`
         },
         {
           role: 'user',

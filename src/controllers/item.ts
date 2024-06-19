@@ -636,7 +636,7 @@ const removeRelation = async (req: Request, res: Response, next: NextFunction) =
 
 const getAISummary = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const data = req.body as { name: string, description: string, type: ItemType, epicId?: string };
+    const data = req.body as { name: string, description: string, type: ItemType, language: string, epicId?: string };
 
     let epicDescription = '';
     if (data.epicId) {
@@ -656,7 +656,7 @@ const getAISummary = async (req: Request, res: Response, next: NextFunction) => 
       messages: [
         {
           role: 'system',
-          content: 'You will create a summary of a software development issue. Your summary should not exceed 200 words. You must detect the language used in the task description and write the summary in the same language. You will be given the name of the issue, a description of the issue, the type of issue and an epic description if there is any associated with the task. You will provide a summary of the task that will help developers have a quick understanding of what the task is about and what they are supposed to do. Your response must be a JSON that follows the format: { summary: <<your summary>> }.'
+          content: `You will create a summary of a software development issue. Your summary should not exceed 200 words. You must provide the summary in ${data.language}. You will be given the name of the issue, a description of the issue, the type of issue and an epic description if there is any associated with the task. You will provide a summary of the task that will help developers have a quick understanding of what the task is about and what they are supposed to do. Your response must be a JSON that follows the format: { summary: <<your summary>> }.`
         },
         {
           role: 'user',
