@@ -58,9 +58,14 @@ export class WSS {
     },
   };
 
-  constructor() {
-    this.wss = new WebSocketServer({ port: 8002 });
-    console.log("The WebSocket server is running on port 8002");
+  constructor(httpServer: any) {
+    const port = Number(process.env.WS_PORT) || 6061;
+    this.wss = new WebSocketServer(
+      process.env.WS_PORT === process.env.API_PORT
+        ? { server: httpServer }
+        : { port }
+    );
+    console.log(`The WebSocket server is running on port ${port}`);
 
     this.wss.on("connection", (ws, req) => {
       // HANDLE USER INSTANCE

@@ -7,10 +7,7 @@ import { WSS } from "./webSocketServer";
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 6060;
-
-// Create WebSocket Server
-export const ws = new WSS();
+const port = process.env.API_PORT || 6060;
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI!, {
@@ -46,6 +43,9 @@ app.use((req, res, next) => {
   return res.status(404).json({ message: error.message });
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`The server is running on port ${port}`);
 });
+
+// Create WebSocket Server
+export const ws = new WSS(server);
