@@ -76,6 +76,7 @@ router.get('/sprints/:projectId', auth, SprintController.getAllSprintsForProject
 router.get('/logs/:entityId', auth, LogController.getLogs);
 router.get('/logs/project/:projectId', auth, LogController.getProjectLogs);
 router.get('/logs/user/:userId', auth, LogController.getUserLogs);
+router.get('/logs/filtered/:projectId', auth, LogController.getFilteredLogs);
 
 // Docs
 router.post('/docs/:projectId', auth, upload.array('files'), UploadedDocsController.uploadDocs);

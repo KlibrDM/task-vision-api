@@ -280,6 +280,46 @@ const getUserLogs = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getFilteredLogs = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.headers['id'] as string;
+    const projectId = req.params.projectId;
+    const affectedEntities = req.query.affectedEntities as LogEntities[] | undefined;
+    const changedFields = req.query.changedFields as string[] | undefined;
+    const actions = req.query.actions as LogAction[] | undefined;
+    const startDate = req.query.startDate as string | undefined;
+    const endDate = req.query.endDate as string | undefined;
+
+    const project = await Project.findOne({ _id: projectId, 'users.userId': userId });
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    const logs = await Log.find(
+      {
+        projectId,
+        affectedEntity: affectedEntities ? { $in: affectedEntities } : undefined,
+        changedField: changedFields ? { $in: changedFields } : undefined,
+        action: actions ? { $in: actions } : undefined,
+        createdAt: {
+          $gte: startDate ? new Date(startDate) : new Date(0),
+          $lt: endDate ? new Date(endDate) : new Date()
+        }
+      },
+      null,
+      { sort: { createdAt: 1 } }
+    );
+    if (!logs.length) {
+      return res.status(404).json({ message: 'Logs not found' });
+    }
+
+    res.send(logs);
+  }
+  catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 export default {
   log,
   logDifference,
@@ -290,4 +330,5 @@ export default {
   getLogs,
   getProjectLogs,
   getUserLogs,
+  getFilteredLogs,
 };
