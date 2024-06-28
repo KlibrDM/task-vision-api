@@ -56,5 +56,7 @@ const SprintSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+SprintSchema.index({ projectId: 1 });
+
 const Sprint = mongoose.model<ISprint>("sprint", SprintSchema);
 export default Sprint;

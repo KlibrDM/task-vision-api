@@ -164,5 +164,10 @@ const ProjectSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+ProjectSchema.index({
+  _id: 1,
+  'users.userId': 1
+});
+
 const Project = mongoose.model<IProject>("project", ProjectSchema);
 export default Project;

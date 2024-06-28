@@ -69,5 +69,12 @@ const UploadedDocSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+UploadedDocSchema.index({ projectId: 1 });
+
+UploadedDocSchema.index({
+  projectId: 1,
+  structure_path: 1
+});
+
 const UploadedDoc = mongoose.model<IUploadedDoc>("uploaded_doc", UploadedDocSchema);
 export default UploadedDoc;

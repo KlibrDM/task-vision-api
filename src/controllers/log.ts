@@ -184,7 +184,7 @@ const getLogs = async (req: Request, res: Response, next: NextFunction) => {
     const changedField = req.query.changedField as string;
     const userId = req.headers['id'] as string;
 
-    const logsCount = await Log.countDocuments({ affectedEntityId: entityId });
+    const logsCount = await Log.countDocuments({ affectedEntityId: entityId, changedField });
     const logs = await Log.find(
       { affectedEntityId: entityId, changedField },
       null,

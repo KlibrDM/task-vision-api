@@ -1,4 +1,5 @@
 import mongoose, { ObjectId } from "mongoose";
+import sprint from "../controllers/sprint";
 
 export enum EventType {
   SPRINT_START = "SPRINT_START",
@@ -66,6 +67,13 @@ const ChartDataSchema = new mongoose.Schema({
   },
 }, {
   timestamps: true,
+});
+
+ChartDataSchema.index({ projectId: 1 });
+
+ChartDataSchema.index({
+  projectId: 1,
+  sprintId: 1,
 });
 
 const ChartData = mongoose.model<IChartData>("chart_data", ChartDataSchema);

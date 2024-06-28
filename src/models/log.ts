@@ -101,5 +101,24 @@ const LogSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+LogSchema.index({ projectId: 1 });
+
+LogSchema.index({ affectedEntityId: 1 });
+
+LogSchema.index({
+  logTriggerId: 1,
+  affectedEntity: 1,
+});
+
+LogSchema.index({
+  projectId: 1,
+  affectedEntity: 1,
+});
+
+LogSchema.index({
+  affectedEntityId: 1,
+  changedField: 1,
+});
+
 const Log = mongoose.model<ILog>("log", LogSchema);
 export default Log;

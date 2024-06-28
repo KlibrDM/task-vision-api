@@ -53,5 +53,12 @@ const NotificationSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+NotificationSchema.index({ projectId: 1 });
+
+NotificationSchema.index({
+  projectId: 1,
+  userId: 1
+});
+
 const Notification = mongoose.model<INotification>("notification", NotificationSchema);
 export default Notification;

@@ -45,5 +45,12 @@ const OrganizationSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+OrganizationSchema.index({ 'users.userId': 1 });
+
+OrganizationSchema.index({
+  _id: 1,
+  'users.userId': 1
+});
+
 const Organization = mongoose.model<IOrganization>("organization", OrganizationSchema);
 export default Organization;

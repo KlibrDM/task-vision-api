@@ -273,7 +273,12 @@ const ItemSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// TODO: Add indexes after performance testing
+ItemSchema.index({ projectId: 1 });
+
+ItemSchema.index({
+  projectId: 1,
+  sprintId: 1,
+});
 
 const Item = mongoose.model<IItem>("item", ItemSchema);
 export default Item;

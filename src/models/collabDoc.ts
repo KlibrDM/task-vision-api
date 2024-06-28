@@ -75,5 +75,12 @@ const CollabDocSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+CollabDocSchema.index({ projectId: 1 });
+
+CollabDocSchema.index({
+  projectId: 1,
+  structure_path: 1
+});
+
 const CollabDoc = mongoose.model<ICollabDoc>("collab_doc", CollabDocSchema);
 export default CollabDoc;
