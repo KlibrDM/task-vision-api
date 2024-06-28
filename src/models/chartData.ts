@@ -1,5 +1,4 @@
 import mongoose, { ObjectId } from "mongoose";
-import sprint from "../controllers/sprint";
 
 export enum EventType {
   SPRINT_START = "SPRINT_START",
